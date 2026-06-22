@@ -33,3 +33,4 @@ Cisco IOS CLI (console access via PuTTY), Cisco Packet Tracer / physical lab equ
 
 ---
 *Coursework for the CCNA track (SRWE module), Cologne University of Applied Sciences — Prof. Dr. A. Grebe.*
+# ccna-srwe-labs
