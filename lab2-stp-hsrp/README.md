@@ -4,28 +4,38 @@
 
 Build a redundant Layer 2 topology with a switching loop, control which switch becomes STP root, observe and compare PVST+ vs. Rapid PVST+ convergence times, harden access ports with PortFast/BPDU Guard, then add a redundant default gateway using HSRP.
 
-## Topology
+```mermaid
+flowchart TD
+    %% Define Devices
+    Lo1(["☁️ Lo1 (Loopback)"])
+    R2(["🌐 R2"])
+    R1(["🌐 R1"])
+    R3(["🌐 R3"])
+    S1["💻 S1"]
+    S2["💻 S2"]
+    S3["💻 S3"]
+    PCA["🖥️ PC-A"]
 
-```
-                         Lo1
-                          |
-            G0/0/0  +-----------+  G0/0/1
-        +------------|    R2     |------------+
-        |            +-----------+            |
-        |G0/0/1                          G0/0/1|
-   +---------+                          +---------+
-   |   R1    |                          |   R3    |
-   +---------+                          +---------+
-     G0/0/0|                                |G0/0/0
-        G0/1|                                |G0/1
-   +--------+----+   F0/3      F0/3   +----+--------+
-   |     S1      |-----------------------|     S3      |
-   +------+------+\                   /+------+------+
-       F0/6| F0/1   \                 /  F0/1 |F0/11
-        [PC-A]        \   +---------+/
-                        \--|   S2    |
-                           +---------+
-```
+    %% Loopback connection
+    Lo1 --- R2
+
+    %% Router Connections (Core Mesh)
+    R2 -- "G0/0/0 <---> G0/0/1" --- R1
+    R2 -- "G0/0/1 <---> G0/0/1" --- R3
+
+    %% Router to Switch Uplinks
+    R1 -- "G0/0/0 <---> G0/1" --- S1
+    R3 -- "G0/0/0 <---> G0/1" --- S3
+
+    %% Switch Mesh Interconnections
+    S1 -- "F0/3 <---> F0/3" --- S3
+    S1 -- "F0/1" --- S2
+    S3 -- "F0/1" --- S2
+
+    %% Host Access Connections
+    S1 -- "F0/6" --- PCA
+
+'''
 
 S1–S2–S3 form a triangle (a deliberate Layer 2 loop) so STP has something to block. R1 and R3 both sit on the same LAN as default-gateway candidates for HSRP; R2 simulates an upstream/Internet hop via a loopback interface.
 
