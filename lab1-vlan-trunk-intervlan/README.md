@@ -39,9 +39,9 @@ flowchart TD
         PCC["🖥️ PC-C"]
     end
     S3 -- "F0/18" --- PCC
-
-    ```
     
+```
+
 
 S1 trunks to both S2 and S3 (mesh of switches), with S1's G0/1 uplinked to R1 for inter-VLAN routing. PC-A sits in VLAN 10 off S1, PC-C sits in VLAN 20 off S3.
 
