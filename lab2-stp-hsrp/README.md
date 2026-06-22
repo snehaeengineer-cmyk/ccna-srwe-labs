@@ -34,8 +34,7 @@ flowchart TD
 
     %% Host Access Connections
     S1 -- "F0/6" --- PCA
-
-'''
+```
 
 S1–S2–S3 form a triangle (a deliberate Layer 2 loop) so STP has something to block. R1 and R3 both sit on the same LAN as default-gateway candidates for HSRP; R2 simulates an upstream/Internet hop via a loopback interface.
 
