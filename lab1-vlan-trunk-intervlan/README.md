@@ -6,25 +6,40 @@ Build a switched LAN with multiple VLANs, connect switches together with 802.1Q 
 
 ## Topology
 
-```
-                    G0/0/0
-                  +--------+
-                  | ISR4321|
-                  |   R1   |
-                  +--------+
-                      | G0/1
-                      |
-        F0/3   +------+------+   F0/3
-   +-----------|  S1 (2960)  |-----------+
-   |           +------+------+           |
-   | F0/6      F0/1   |                  | F0/18
-[PC-A]            |    |                [PC-C]
-VLAN 10           |    |                VLAN 20
-                   F0/1| F0/2
-                  +----+----+
-                  |    S2   |
-                  +---------+
-```
+```mermaid
+flowchart TD
+    %% Define Devices
+    R1(["🌐 R1 (ISR4321)"])
+    S1["💻 S1 (2960)"]
+    S2["💻 S2 (2960)"]
+    S3["💻 S3 (2960)"]
+
+    %% Core Router Link
+    R1 -- "G0/0/0 <---> G0/1" --- S1
+
+    %% Inter-Switch Trunk Links (Dashed)
+    S1 -. "F0/3 <---> F0/3" .-> S3
+    S1 -. "F0/1 <---> F0/1" .-> S2
+    S2 -. "F0/2 <---> F0/2 (STP Blocked)" .-> S3
+
+    %% VLAN 10 Group A
+    subgraph VLAN10_A [VLAN 10]
+        PCA["🖥️ PC-A"]
+    end
+    S1 -- "F0/6" --- PCA
+
+    %% VLAN 10 Group B
+    subgraph VLAN10_B [VLAN 10]
+        PCB["🖥️ PC-B"]
+    end
+    S3 -- "F0/11" --- PCB
+
+    %% VLAN 20 Group
+    subgraph VLAN20 [VLAN 20]
+        PCC["🖥️ PC-C"]
+    end
+    S3 -- "F0/18" --- PCC
+    ```
 
 S1 trunks to both S2 and S3 (mesh of switches), with S1's G0/1 uplinked to R1 for inter-VLAN routing. PC-A sits in VLAN 10 off S1, PC-C sits in VLAN 20 off S3.
 
