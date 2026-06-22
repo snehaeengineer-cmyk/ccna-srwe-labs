@@ -1,0 +1,55 @@
+! ============================================
+! Router R1 - CCNA SRWE Lab 3
+! Router-on-a-Stick + Serial Default Route
+! ============================================
+
+no ip domain-lookup
+hostname R1
+enable secret class
+
+line console 0
+ password cisco
+ login
+ logging synchronous
+exit
+
+service password-encryption
+
+! --- Sub-interfaces, router-on-a-stick ---
+interface g0/0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+exit
+
+interface g0/0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+exit
+
+interface g0/0/0.99
+ encapsulation dot1Q 99
+ ip address 192.168.99.1 255.255.255.0
+exit
+
+interface g0/0/0
+ no shutdown
+exit
+
+! --- Serial link to R2 (this end is DCE) ---
+interface s0/1/0
+ ip address 10.1.1.1 255.255.255.252
+ clock rate 125000
+ no shutdown
+exit
+
+! --- Static default route out the serial interface ---
+ip route 0.0.0.0 0.0.0.0 s0/1/0
+
+end
+copy running-config startup-config
+
+! --- Verification commands used ---
+! show ip interface brief
+! show ip route
+! show interfaces trunk   (on adjacent switch, to confirm encapsulation/native VLAN)
+! show controllers s0/1/0

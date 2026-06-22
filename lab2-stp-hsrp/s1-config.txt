@@ -1,0 +1,66 @@
+! ============================================
+! Switch S1 - CCNA SRWE Lab 2
+! STP secondary root, PortFast, Rapid PVST+
+! ============================================
+
+no ip domain-lookup
+hostname S1
+enable secret class
+
+line console 0
+ password cisco
+ login
+ logging synchronous
+exit
+
+service password-encryption
+
+! --- VLANs ---
+vlan 10
+ name User
+exit
+vlan 99
+ name Management
+exit
+
+! --- Access port: PC-A on VLAN 10, with PortFast ---
+interface f0/6
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+exit
+
+! --- Trunk to S2 ---
+interface f0/1
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,99
+exit
+
+! --- Trunk to S3 ---
+interface f0/3
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,99
+exit
+
+! --- Management SVI ---
+interface vlan 99
+ ip address 192.168.99.11 255.255.255.0
+ no shutdown
+exit
+
+ip default-gateway 192.168.99.1
+
+! --- STP: secondary root for all VLANs ---
+spanning-tree mode rapid-pvst
+spanning-tree vlan 1,10,99 root secondary
+
+end
+copy running-config startup-config
+
+! --- Verification / observation commands used ---
+! show spanning-tree
+! show spanning-tree vlan 10
+! debug spanning-tree events
+! no debug spanning-tree events

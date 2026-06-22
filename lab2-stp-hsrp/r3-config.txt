@@ -1,0 +1,39 @@
+! ============================================
+! Router R3 - CCNA SRWE Lab 2
+! HSRP Standby Router
+! ============================================
+
+no ip domain-lookup
+hostname R3
+enable secret class
+
+line console 0
+ password cisco
+ login
+ logging synchronous
+exit
+
+service password-encryption
+
+! --- LAN-facing interface, HSRP standby ---
+interface g0/0/0
+ ip address 192.168.10.3 255.255.255.0
+ standby 1 ip 192.168.10.254
+ no shutdown
+exit
+
+! --- WAN-facing link toward R2 ---
+interface g0/0/1
+ ip address 10.2.2.1 255.255.255.252
+ no shutdown
+exit
+
+! --- Default route out toward R2 ---
+ip route 0.0.0.0 0.0.0.0 g0/0/1
+
+end
+copy running-config startup-config
+
+! --- Verification commands used ---
+! show standby
+! show standby brief

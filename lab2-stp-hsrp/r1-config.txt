@@ -1,0 +1,42 @@
+! ============================================
+! Router R1 - CCNA SRWE Lab 2
+! HSRP Active Router (priority 150, preempt)
+! ============================================
+
+no ip domain-lookup
+hostname R1
+enable secret class
+
+line console 0
+ password cisco
+ login
+ logging synchronous
+exit
+
+service password-encryption
+
+! --- LAN-facing interface, HSRP active ---
+interface g0/0/0
+ ip address 192.168.10.1 255.255.255.0
+ standby 1 ip 192.168.10.254
+ standby 1 priority 150
+ standby 1 preempt
+ no shutdown
+exit
+
+! --- WAN-facing link toward R2 ---
+interface g0/0/1
+ ip address 10.1.1.1 255.255.255.252
+ no shutdown
+exit
+
+! --- Default route out toward R2 ---
+ip route 0.0.0.0 0.0.0.0 g0/0/1
+
+end
+copy running-config startup-config
+
+! --- Verification commands used ---
+! show standby
+! show standby brief
+! show ip route

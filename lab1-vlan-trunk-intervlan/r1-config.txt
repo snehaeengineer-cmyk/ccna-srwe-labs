@@ -1,0 +1,50 @@
+! ============================================
+! Router R1 - CCNA SRWE Lab 1
+! Router-on-a-Stick: Inter-VLAN Routing
+! ============================================
+
+! --- Basic device hardening ---
+no ip domain-lookup
+hostname R1
+enable secret class
+
+line console 0
+ password cisco
+ login
+ logging synchronous
+exit
+
+service password-encryption
+
+! --- Sub-interface for VLAN 10 (Student) ---
+interface g0/0/0.10
+ description VLAN 10 interface
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+exit
+
+! --- Sub-interface for VLAN 20 (Faculty) ---
+interface g0/0/0.20
+ description VLAN 20 interface
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+exit
+
+! --- Physical interface carries native VLAN 99 (untagged) ---
+interface g0/0/0
+ description connected to VLAN 99 (native)
+ ip address 192.168.99.1 255.255.255.0
+ no shutdown
+exit
+
+! --- Save ---
+end
+copy running-config startup-config
+
+! --- Verification commands used ---
+! show ip route
+! show ip interface brief
+! show interface g0/0/0
+! show running-config

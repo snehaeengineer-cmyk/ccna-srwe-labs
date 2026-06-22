@@ -1,0 +1,89 @@
+! ============================================
+! Switch S2 - CCNA SRWE Lab 3
+! VLANs, Secure Trunks, DHCP snooping
+! ============================================
+
+no ip domain-lookup
+hostname S2
+enable secret class
+
+line console 0
+ password cisco
+ login
+ logging synchronous
+exit
+
+service password-encryption
+
+! --- VLAN database ---
+vlan 10
+ name Admin
+exit
+vlan 20
+ name Sales
+exit
+vlan 99
+ name Management
+exit
+vlan 100
+ name NativeVLAN
+exit
+vlan 999
+ name BlackHole
+exit
+
+! --- Access ports for real VLANs ---
+interface f0/2
+ switchport mode access
+ switchport access vlan 10
+exit
+
+interface f0/3
+ switchport mode access
+ switchport access vlan 20
+exit
+
+! --- Management access port ---
+interface f0/24
+ switchport mode access
+ switchport access vlan 99
+exit
+
+! --- Secure trunk to S1 ---
+interface f0/1
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,99
+ switchport trunk native vlan 100
+ switchport nonegotiate
+ ip dhcp snooping trust
+exit
+
+! --- Secure trunk uplink to R3 ---
+interface g0/1
+ no switchport access vlan 10
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,99
+ switchport trunk native vlan 100
+ switchport nonegotiate
+ ip dhcp snooping trust
+exit
+
+! --- Management SVI ---
+interface vlan 99
+ ip address 192.168.99.102 255.255.255.0
+ no shutdown
+exit
+
+ip default-gateway 192.168.99.1
+
+! --- Global DHCP snooping (enabled here, per lab instructions) ---
+ip dhcp snooping
+ip dhcp snooping vlan 10,20,99
+
+end
+copy running-config startup-config
+
+! --- Verification commands used ---
+! show vlan brief
+! show interfaces trunk
+! show ip dhcp snooping

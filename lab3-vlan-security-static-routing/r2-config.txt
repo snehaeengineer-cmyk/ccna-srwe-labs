@@ -1,0 +1,53 @@
+! ============================================
+! Router R2 - CCNA SRWE Lab 3
+! Serial WAN hub, Loopback, Recursive Static Routes
+! ============================================
+
+no ip domain-lookup
+hostname R2
+enable secret class
+
+line console 0
+ password cisco
+ login
+ logging synchronous
+exit
+
+service password-encryption
+
+! --- Serial link to R1 ---
+interface s0/1/0
+ ip address 10.1.1.2 255.255.255.252
+ no shutdown
+exit
+
+! --- Serial link to R3 (this end is DCE) ---
+interface s0/1/1
+ ip address 10.2.2.2 255.255.255.252
+ clock rate 125000
+ no shutdown
+exit
+
+! --- Loopback simulating upstream/Internet ---
+interface loopback 1
+ ip address 209.165.200.225 255.255.255.224
+exit
+
+! --- Default route out toward "the Internet" via loopback ---
+ip route 0.0.0.0 0.0.0.0 loopback 1
+
+! --- Recursive static routes back to branch VLANs ---
+! VLAN 10 and 99 live behind R1
+ip route 192.168.10.0 255.255.255.0 10.1.1.1
+ip route 192.168.99.0 255.255.255.0 10.1.1.1
+
+! VLAN 20 lives behind R3
+ip route 192.168.20.0 255.255.255.0 10.2.2.1
+
+end
+copy running-config startup-config
+
+! --- Verification commands used ---
+! show ip route
+! ping 10.1.1.1
+! ping 10.2.2.1

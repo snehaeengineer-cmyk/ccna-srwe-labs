@@ -1,0 +1,64 @@
+! ============================================
+! Switch S3 - CCNA SRWE Lab 2
+! PortFast, Rapid PVST+
+! ============================================
+
+no ip domain-lookup
+hostname S3
+enable secret class
+
+line console 0
+ password cisco
+ login
+ logging synchronous
+exit
+
+service password-encryption
+
+! --- VLANs ---
+vlan 10
+ name User
+exit
+vlan 99
+ name Management
+exit
+
+! --- Access port: PC-C on VLAN 10, with PortFast ---
+interface f0/11
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+exit
+
+! --- Trunk to S1 ---
+interface f0/3
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,99
+exit
+
+! --- Trunk to S2 ---
+interface f0/2
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,99
+exit
+
+! --- Management SVI ---
+interface vlan 99
+ ip address 192.168.99.13 255.255.255.0
+ no shutdown
+exit
+
+ip default-gateway 192.168.99.1
+
+spanning-tree mode rapid-pvst
+
+end
+copy running-config startup-config
+
+! --- Verification / observation commands used ---
+! show spanning-tree
+! debug spanning-tree events
+!   (used to time convergence after shut/no shut on f0/2)
+! no debug spanning-tree events
