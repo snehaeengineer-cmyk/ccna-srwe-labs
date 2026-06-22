@@ -32,5 +32,6 @@ Each lab folder contains:
 Cisco IOS CLI (console access via PuTTY), Cisco Packet Tracer / physical lab equipment (2960-24TT switches, ISR4321 routers).
 
 ---
-*Coursework for the CCNA track (SRWE module), Cologne University of Applied Sciences — Prof. Dr. A. Grebe.*
+*Coursework for the CCNA track (SRWE module), TH Köln Universiy — Prof. Dr. A. Grebe.*
+# ccna-srwe-labs
 # ccna-srwe-labs
