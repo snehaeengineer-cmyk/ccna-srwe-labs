@@ -4,25 +4,35 @@
 
 Three-part lab: rebuild a VLAN/trunk/inter-VLAN-routing setup as a refresher, then harden it with switch port security, secure trunking, STP attack mitigation and DHCP snooping, and finally extend the topology with serial WAN links and static routing across three routers.
 
-## Topology
+```mermaid
+flowchart TD
+    %% Define Devices
+    R2(["🌐 R2 (ISR4321)"])
+    R1(["🌐 R1"])
+    R3(["🌐 R3"])
+    S1["💻 S1"]
+    S2["💻 S2"]
+    PC1["🖥️ PC-1 <br> (VLAN 10)"]
+    PC2["🖥️ PC-2"]
+    PC3["🖥️ PC-3"]
+    PC4["🖥️ PC-4 <br> (VLAN 20)"]
 
-```
-                         S0/1/0   R2   S0/1/1
-                       +-----------------------+
-                       |        ISR4321        |
-                       +-----------------------+
-                      /                         \
-              S0/1/0 /                           \ S0/1/0
-            +---------+                         +---------+
-            |   R1    |                         |   R3    |
-            +---------+                         +---------+
-           G0/0/0|                                  |G0/0/0
-            +-----+--+                          +----+-----+
-            |   S1    |---- VLAN 99 trunk ------|    S2    |
-            +---------+                          +---------+
-           /         \                          /         \
-       [PC-1]      [PC-2]                    [PC-3]      [PC-4]
-       VLAN 10                                            VLAN 20
+    %% Serial WAN Connections
+    R2 -- "S0/1/0 <---> S0/1/0" --- R1
+    R2 -- "S0/1/1 <---> S0/1/0" --- R3
+
+    %% Router to Switch Uplinks
+    R1 -- "G0/0/0" --- S1
+    R3 -- "G0/0/0" --- S2
+
+    %% Inter-Switch Trunk
+    S1 -- "VLAN 99 Trunk" --- S2
+
+    %% Host Connections
+    S1 --- PC1
+    S1 --- PC2
+    S2 --- PC3
+    S2 --- PC4
 ```
 
 R2 sits between R1 and R3 over serial WAN links and simulates an ISP/core hop via a loopback interface, mirroring how a branch site routes through a central hub to reach "the Internet."
