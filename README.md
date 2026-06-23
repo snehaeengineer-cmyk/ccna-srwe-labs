@@ -1,5 +1,12 @@
 # CCNA SRWE Labs
 
+![Cisco](https://img.shields.io/badge/Cisco-IOS-blue)
+![Routing](https://img.shields.io/badge/Routing-Static%20Routing-success)
+![Switching](https://img.shields.io/badge/Switching-VLANs%20%26%20STP-orange)
+![Security](https://img.shields.io/badge/Security-Port%20Security-purple)
+![Status](https://img.shields.io/badge/Status-Completed-success)
+
+
 Hands-on Cisco switching and routing labs completed for **Switching, Routing, and Wireless Essentials (SRWE)**, part of the CCNA curriculum (Networks and Protocols / Network Security and Automation coursework).
 
 All configurations were built and verified on physical Cisco gear (2960 switches, ISR4321 routers) in a lab environment, console-cable access via PuTTY.
