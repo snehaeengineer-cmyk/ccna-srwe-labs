@@ -1,5 +1,7 @@
 # CCNA SRWE Labs
 
+![CCNA Progress](https://img.shields.io/badge/CCNA-ITN%20%E2%9C%93%20SRWE%20%E2%86%92%20ENSA-blue)
+
 ![Cisco](https://img.shields.io/badge/Cisco-IOS-blue)
 ![Routing](https://img.shields.io/badge/Routing-Static%20Routing-success)
 ![Switching](https://img.shields.io/badge/Switching-VLANs%20%26%20STP-orange)
